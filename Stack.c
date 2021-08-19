@@ -31,14 +31,15 @@ void push(struct stack* S, char x)
 	S->top = S->top + 1;
 }
 
-int pop(struct stack* S)
+char pop(struct stack* S)
 {
+	char x ='\0';
 	if(stackEmpty(S))
-		return -1;
+		return x;
 	else
 	{
 		S->top-=1;
-		return 1;
+		return S->strContent[(S->top) + 1];
 	}
 	
 }
