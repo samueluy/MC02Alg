@@ -20,16 +20,23 @@ getLongString(char str[])
 }
 
 /*TODO: Check for Logical and equal precedence.*/
-int checkPrecedence(char chStack, char chInput)
+int checkPrecedence(char ch)
 {
-	//Highest Precedence
-	if(chStack == '^')
+	
+	//Highest to Lowest Precedence
+	if(ch == '^' || ch == '!')
+		return 5;
+	else if(ch == '/' || ch == '*')
+		return 4;
+	else if(ch == '+' || ch == '-')
 		return 3;
-	//Operation in stack is * or / and input is lower than it.	
-	else if(chStack == '/' || chStack == '*' && chInput != '/' || chInput != '*')
+	else if(ch == '>' || ch == '<' || ch == '=')
 		return 2;
-	else if
+	else if(ch == '&' || ch == '|')
+		return 1;
 }
+
+
 int checkOperator(char ch)
 {
 	if(ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^')
@@ -38,12 +45,11 @@ int checkOperator(char ch)
 		return 0;
 }
 
-void parser(char str[],int n)
+void parser(char str[],char postfix[],int n)
 {
 	int i = 0;
 	struct stack temp;
-	struct stack postfix;
-	
+	char popTemp;
 	do
 	{
 		//If the the current character is:
@@ -53,29 +59,79 @@ void parser(char str[],int n)
 		
 		//A number	
 		if(str[i] >= 48 && str[i] <=57)
-			push(&postfix,str[i]);
+			postfix[i] = str[i];
 		
 		//For operators
 		else
 		{
 			///If symbol in stack has higgher precedence.
-			
+			if(checkPrecedence(temp.strContent[temp.top]) > checkPrecedence(str[i]))
+			{
+				/*loop and Pop from stack then add to postfix until '(' is seen. 
+					
+					push str[i] to stack.
+				 */
+				do{
+					popTemp = pop(&temp);
+					postfix[i] = popTemp;
+				}while(popTemp != '(');
+				//Replace '('
+					push(&temp,'(');
+			}
+			///If closing parenthesis
+			if(str[i] == ')')
+			{
+			/*loop and Pop from stack then add to postfix until '(' is seen. 
+					pop the '(' from stack
+			*/
+				do{
+					popTemp = pop(&temp);
+					postfix[i] = popTemp;	
+				}while(popTemp != '(');
+			}
+			else
+			{
+			/*If equal precedence and anything else.
+				Push to stack.*/
+				push(&temp,str[i]);
+			}
+			printf("DEBUG ME!");		
 		}
-		
-		
+
+		i++;		
 	}while(i<n);				//(str != '\0');
+	/*
+		Add ol in stack sa postFix.	
+		add '\0'
+	*/
+	do{
+		popTemp = pop(&temp);
+		postfix[i] = popTemp;
+		i++;
+	}while(popTemp != '\0');
+	
+	
 }
+
 int main()
 {
 	struct stack input;
-	int i;
+	char postFix[MAX];
+	int i = 0;
 	printf("Input:\n");
 	getLongString(input.strContent);
-	do	
+	
+	while(input.strContent[i] != '\0')
+		i++;
+		
+	parser(input.strContent,postFix,i);
+	
+	i = 0;
+	while(postFix[i] != '\0')
 	{
-			i++;
-	}while(input.strContent[i] != '\0');
-
-	printf("%c\n",47);
+		printf("\n\n%c ", postFix[i]);
+		i++;
+	}
+	
 	return 0;
 }

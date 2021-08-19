@@ -27,8 +27,8 @@ int stackEmpty(struct stack* S)
 
 void push(struct stack* S, char x)
 {
-	S->strContent[S->top] = x;
 	S->top = S->top + 1;
+	S->strContent[S->top] = x;
 }
 
 char pop(struct stack* S)
@@ -51,3 +51,16 @@ void display(struct stack S)
 		printf("%c %d\n", S.strContent[i],i);
 }
 
+/*
+int main()
+{
+	struct stack power;
+	push(&power, 'C');
+	push(&power, 'H');
+	push(&power, 'A');
+	push(&power, 'R');
+	push(&power, 'S');
+
+	char ch = pop(&power);	
+	printf("%c",ch);
+}*/
