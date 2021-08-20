@@ -21,7 +21,7 @@ int stackEmpty(struct stack* S)
 	else
 	{
 		S->isEmpty = 0;	
-		return 0;
+		return -1;
 	}
 }
 
@@ -34,7 +34,7 @@ void push(struct stack* S, char x)
 char pop(struct stack* S)
 {
 	char x ='\0';
-	if(stackEmpty(S))
+	if(stackEmpty(S) == -1)
 		return x;
 	else
 	{
@@ -55,12 +55,19 @@ void display(struct stack S)
 int main()
 {
 	struct stack power;
+	power.top = -1;
 	push(&power, 'C');
 	push(&power, 'H');
 	push(&power, 'A');
 	push(&power, 'R');
 	push(&power, 'S');
-
-	char ch = pop(&power);	
-	printf("%c",ch);
+	int i = 0;
+	char ch = pop(&power);
+	while(power.strContent[i] != '\0')	
+	{
+		printf("%c",power.strContent[i]);
+		i++;
+	}
+	
+//	printf("%d",power.top);
 }*/
