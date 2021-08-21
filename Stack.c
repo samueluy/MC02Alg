@@ -13,7 +13,7 @@ struct stack
 
 int stackEmpty(struct stack* S)
 {
-	if(S->top == 0)
+	if(S->top == -1)
 	{
 		S->isEmpty = 1;
 		return 1;
@@ -21,7 +21,7 @@ int stackEmpty(struct stack* S)
 	else
 	{
 		S->isEmpty = 0;	
-		return -1;
+		return 0;		//Should it be 1?
 	}
 }
 

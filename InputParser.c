@@ -66,52 +66,60 @@ void parser(char str[],char postfix[],int n)
 			postfix[j] = str[i];
 			j++;
 		}
-		
-		//For operators
-		////PROBLEM IN HERE!
+		//To prevent Precedence comparison with '('
+		else if(temp.strContent[temp.top] == '(')
+			push(&temp,str[i]);
+		//If character is )
 		else if(str[i] == ')')
-		{	
-			do{
-				popTemp = pop(&temp);
-				printf("%cs\n", popTemp);		
-				if(popTemp != '(')
-				{
-					postfix[j] = popTemp;
-					j++;
-				}
-			}while(popTemp != '(' && popTemp != '\0');
-		}
-		else if(checkPrecedence(temp.strContent[temp.top]) > checkPrecedence(str[i]))
 		{
-		printf("%c\t%c\n",temp.strContent[temp.top],str[i]);
-			if(temp.strContent[temp.top] != '(')
+			///While the stack still has input, pop and add to postfix.
+			while(!stackEmpty(&temp) && temp.strContent[temp.top] != '(' )			
 			{
-				/*This means the operators compared are valid. Loop through and add to postfix.*/
+				popTemp = pop(&temp);
+				postfix[j] = popTemp;
+				j++;
 			}
-			else	//Meaning the operator that we saw is (
-				push(&temp,str[i]);
+			//Pop a '(' from stack.
+			pop(&temp);
 		}
-		else if(checkPrecedence(temp.strContent[temp.top]) == checkPrecedence(str[i]))
+		//If current character has greater precedence than the one in stack.
+		else if(checkPrecedence(str[i]) >= checkPrecedence(temp.strContent[temp.top]))
+			push(&temp,str[i]);
+		// If the one in stack has higher precedence.
+		else if(checkPrecedence(str[i]) < checkPrecedence(temp.strContent[temp.top]))
 		{
-			push(&temp, str[i]);
+			/*While the top of the stack's has greater precedence than the current character, 
+				the stack is not empty and the top is not the '(' character.. Pop and add to postfix.
+			*/
+			while(checkPrecedence(temp.strContent[temp.top] >= checkPrecedence(str[i])) &&
+					!stackEmpty(&temp) && temp.strContent[temp.top] != '('){
+				popTemp = pop(&temp);
+				postfix[j] = popTemp;
+				j++;
+			}
+			//Add the operator compared against.
+			push(&temp,str[i]);
 		}
-
 		i++;		
-	}while(i<n);				//(str != '\0');
-	/*
-		Add ol in stack sa postFix.	
-		add '\0'
 		
-		problem here too.
-	*/
-	postfix[strlen(postfix) - 1] = '\0';
+	}while(i<n);				
+	
+	//While there is still something in the stack.
+	while(!stackEmpty(&temp))
+	{
+		popTemp = pop(&temp);
+		postfix[j] = popTemp;
+		j++;
+	}
+	
+	postfix[strlen(postfix)] = '\0';
 	
 }
 
 int main()
 {
 	struct stack input;
-	input.top = -1;
+	input.top = -1;	/// IMPORTANT.
 	
 	char postFix[MAX];
 	int i = 0;
