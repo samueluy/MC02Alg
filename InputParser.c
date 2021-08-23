@@ -46,6 +46,42 @@ int checkOperator(char ch)
 		return 0;
 }
 
+void postfixEvaluation(char postfix[]){
+	struct stack temp;
+	int total, A, B, i;
+	
+	for(i=0; i<=strlen(postfix); i++ ){
+		if(postfix[i] >= 48 && postfix[i] <=57){ // check if number (can use isDigit())
+		push(&temp, postfix[i]-'0'); // push numerical value to stack
+		}
+		else if(postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/'){
+			A = pop(&temp);
+			B = pop(&temp);
+			
+			switch (postfix[i])
+	            {
+	            case '*':
+	                total = B * A;
+	                break;
+	
+	            case '/':
+	                total = B / A;
+	                break;
+	
+	            case '+':
+	                total = B + A;
+	                break;
+	
+	            case '-':
+	                total = B - A;
+	                break;
+	            }
+	            push(&temp, total);
+		}
+	}
+	    printf("\nCalculation: %d \n", pop(&temp));
+}
+
 void parser(char str[],char postfix[],int n)
 {
 	int i = 0;
@@ -102,8 +138,9 @@ void parser(char str[],char postfix[],int n)
 		}
 		i++;		
 		
-	}while(i<n);				
+	}while(i<n);
 	
+
 	//While there is still something in the stack.
 	while(!stackEmpty(&temp))
 	{
@@ -111,7 +148,7 @@ void parser(char str[],char postfix[],int n)
 		postfix[j] = popTemp;
 		j++;
 	}
-	
+
 	postfix[strlen(postfix)] = '\0';
 	
 }
@@ -128,12 +165,11 @@ int main()
 	getLongString(input.strContent);
 	parser(input.strContent,postFix, strlen(input.strContent));
 	
-	i = 0;
-	while(i<strlen(postFix))
-	{
+	printf("Postfix: ");
+	for(i=0; i<strlen(postFix); i++)
 		printf("%c ", postFix[i]);
-		i++;
-	}
+
+	postfixEvaluation(postFix);
 	
 	return 0;
 }
