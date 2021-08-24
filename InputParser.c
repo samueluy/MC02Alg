@@ -104,10 +104,16 @@ void parser(char str[],char postfix[],int n)
 		}
 		//To prevent Precedence comparison with '('
 		else if(temp.strContent[temp.top] == '(')
+		{
+			postfix[j] = ' ';
+			j++;		
 			push(&temp,str[i]);
+		}
 		//If character is )
 		else if(str[i] == ')')
 		{
+			postfix[j] = ' ';
+			j++;
 			///While the stack still has input, pop and add to postfix.
 			while(!stackEmpty(&temp) && temp.strContent[temp.top] != '(' )			
 			{
@@ -127,12 +133,15 @@ void parser(char str[],char postfix[],int n)
 			/*While the top of the stack's has greater precedence than the current character, 
 				the stack is not empty and the top is not the '(' character.. Pop and add to postfix.
 			*/
+			push(&temp,' ');
 			while(checkPrecedence(temp.strContent[temp.top] >= checkPrecedence(str[i])) &&
 					!stackEmpty(&temp) && temp.strContent[temp.top] != '('){
 				popTemp = pop(&temp);
 				postfix[j] = popTemp;
 				j++;
 			}
+			postfix[j] = ' ';
+			j++;
 			//Add the operator compared against.
 			push(&temp,str[i]);
 		}
@@ -167,7 +176,7 @@ int main()
 	
 	printf("Postfix: ");
 	for(i=0; i<strlen(postFix); i++)
-		printf("%c ", postFix[i]);
+		printf("%c", postFix[i]);
 
 	postfixEvaluation(postFix);
 	
