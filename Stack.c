@@ -10,6 +10,7 @@ struct stack
 	token strContent;
 	arrNum intContent;
 	int top;
+	int top2;
 	int isEmpty;
 	int flag;
 };
@@ -40,6 +41,10 @@ char pop(struct stack* S)
 	}
 }
 
+int popAsInt(struct stack* S){
+	return S->intContent[S->top2--];
+}
+
 void push(struct stack* S, char x)
 {
 	S->top = S->top + 1;
@@ -49,11 +54,11 @@ void push(struct stack* S, char x)
 void pushEval(struct stack* S, int val){
 	if(S->flag==1){
 		int num;
-		num=pop(S);
-		S->strContent[++S->top]=val+10*num;
+		num=popAsInt(S);
+		S->intContent[++S->top2]=val+10*num;
 	}
 	else if(S->flag==0){
-		S->strContent[++S->top]=val;
+		S->intContent[++S->top2]=val;
 		S->flag=1;
 	}
 }
