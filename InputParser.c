@@ -1,10 +1,12 @@
 #include<stdio.h>
 #include<string.h>
-#include<ctype.h>
-
 #define MAX 255
 
 #include "Stack.c"
+
+/*This function is used to take input from the user
+	@param str - Address of a character array to store the inputs of the user. 
+*/
 void
 getLongString(char str[]) 
 {  char ch;
@@ -22,9 +24,17 @@ getLongString(char str[])
    } while (ch != '\n');
 }
 
-/*TODO: Check for Logical and equal precedence.*/
+/*
+	This function checks the ranking of
+	precedence for each operator.
+	
+	@param ch - operator to be checked.
+	@return ranking equivalent for the operator. -1 otherwise.
+
+*/
 int checkPrecedence(char ch)
 {
+	
 	//Highest to Lowest Precedence
 	if(ch == '^' || ch == '!')
 		return 5;
@@ -39,6 +49,13 @@ int checkPrecedence(char ch)
 	return -1;
 }
 
+/*
+	This function is used to check if 
+	the character is an operator
+	
+	@param ch - characteer to be checked.
+	return 1 if ch is an operator. 0 otherwise.
+*/
 int checkOperator(char ch)
 {
 	if(ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^')
@@ -47,20 +64,21 @@ int checkOperator(char ch)
 		return 0;
 }
 
+/*
+	This function is used to evaluate 
+	a postfix expression.
+	
+	@param postfix - postfix expression represented as array of characters.
+*/
 void postfixEvaluation(char postfix[]){
 	struct stack temp;
 	int total, A, B, i;
 	
-	temp.flag=0;
-	
 	for(i=0; i<=strlen(postfix); i++ ){
-		if(isdigit(postfix[i])){ // check if number
-			pushEval(&	temp, postfix[i]-'0'); // push numerical value to stack
+		if(postfix[i] >= 48 && postfix[i] <=57){ // check if number (can use isDigit())
+		push(&temp, postfix[i]-'0'); // push numerical value to stack
 		}
-		else if(postfix[i] == ' ')
-			temp.flag=0;
-		else{
-			temp.flag=0;
+		else if(postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/'){
 			A = pop(&temp);
 			B = pop(&temp);
 			
@@ -88,6 +106,16 @@ void postfixEvaluation(char postfix[]){
 	    printf("\nCalculation: %d \n", pop(&temp));
 }
 
+/*
+	This function manipulates an infix expression,
+	manipulating each character in the array using 
+	a stack implementation to produce a postfix expression.
+	
+	@param str - Infix array of characters
+	@param postfix - Array of characters for storing result.
+	@param n - Number of characters in str
+
+*/
 void parser(char str[],char postfix[],int n)
 {
 	int i = 0;
@@ -95,28 +123,30 @@ void parser(char str[],char postfix[],int n)
 	struct stack temp;
 	temp.top = -1;
 	char popTemp;
+	
+	/*Catch the instance where the current character is*/
 	do
 	{
-		//If the the current character is:
 		// Open Parenthesis
 		if(str[i] == '(')
 			push(&temp,str[i]);
 		
 		//A number	
-		else if(isdigit(str[i]))
+		else if(str[i] >= 48 && str[i] <=57)
 		{
 			postfix[j] = str[i];
 			j++;
 		}
+		
 		//To prevent Precedence comparison with '('
 		else if(temp.strContent[temp.top] == '(')
 		{
-			/*Filter the case for >= */
 			if(!checkOperator(str[i]) && str[i + 1] == '=') 
 			{
 				postfix[j] = ' ';
 				j++;
 				push(&temp,str[i + 1]);
+				push(&temp,' ');
 				push(&temp,str[i]);
 				i++;
 			}
@@ -124,17 +154,19 @@ void parser(char str[],char postfix[],int n)
 			{
 				postfix[j] = ' ';
 				j++;		
+				push(&temp,' ');
 				push(&temp,str[i]);
 			}
 		}
-		//If character is )
+		
+		//Closing Parenthesis
 		else if(str[i] == ')')
 		{
-			///While the stack still has input, pop and add to postfix.
+			postfix[j] = ' ';
+			j++;
 			while(!stackEmpty(&temp) && temp.strContent[temp.top] != '(' )			
 			{
-				postfix[j] = ' ';
-				j++;
+							printf("%c\t%c IS HERE\n",temp.strContent[temp.top],str[i]);
 				popTemp = pop(&temp);
 				postfix[j] = popTemp;
 				j++;
@@ -142,13 +174,12 @@ void parser(char str[],char postfix[],int n)
 			//Pop a '(' from stack.
 			pop(&temp);
 		}
-		//If current character has greater precedence than the one in stack.
+		
+		//Current character and Stack have equal precedence
 		else if(checkPrecedence(str[i]) == checkPrecedence(temp.strContent[temp.top]))
 		{	
-			
 			if(checkOperator(str[i]))
 			{
-				printf("%c\t%c IS HERE\n",temp.strContent[temp.top],str[i]);
 				postfix[j] = ' ';
 				j++;
 				popTemp = pop(&temp);
@@ -162,20 +193,24 @@ void parser(char str[],char postfix[],int n)
 			}
 			else
 			{
-				printf("%c\t%c IS HERE\n",temp.strContent[temp.top],str[i]);
 				push(&temp,str[i]);
 			}
 		}	
+		
+		//Current character has precedence
 		else if(checkPrecedence(str[i]) > checkPrecedence(temp.strContent[temp.top]))
 		{			
 			push(&temp,' ');
+			postfix[j] = ' ';
+			j++;
 			push(&temp,str[i]);
 		}
-		// If the one in stack has higher precedence.
+		
+		//Stack has higher precedence.
 		else if(checkPrecedence(str[i]) < checkPrecedence(temp.strContent[temp.top]))
 		{
 			/*While the top of the stack's has greater precedence than the current character, 
-				the stack is not empty and the top is not the '(' character.. Pop and add to postfix.
+				the stack is not empty and the top is not the '(' character... Pop and add to postfix.
 			*/
 			push(&temp,' ');
 			while(checkPrecedence(temp.strContent[temp.top] >= checkPrecedence(str[i])) &&
@@ -186,11 +221,10 @@ void parser(char str[],char postfix[],int n)
 			}
 			postfix[j] = ' ';
 			j++;
-			//Add the operator compared against.
 			push(&temp,str[i]);
 		}
-		i++;		
 		
+		i++;		
 	}while(i<n);
 
 	//While there is still something in the stack.
@@ -202,7 +236,6 @@ void parser(char str[],char postfix[],int n)
 	}
 
 	postfix[j] = '\0';
-	
 }
 
 int main()
