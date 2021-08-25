@@ -1,5 +1,8 @@
 #include<stdio.h>
 #include<string.h>
+#include <stdlib.h>
+#include<ctype.h>
+
 #define MAX 255
 
 #include "Stack.c"
@@ -48,15 +51,29 @@ int checkOperator(char ch)
 
 void postfixEvaluation(char postfix[]){
 	struct stack temp;
-	int total, A, B, i;
+	int total, A, B, i,y=0;
 	
 	for(i=0; i<=strlen(postfix); i++ ){
-		if(postfix[i] >= 48 && postfix[i] <=57){ // check if number (can use isDigit())
-		push(&temp, postfix[i]-'0'); // push numerical value to stack
+		printf("\nFor i=%d", i);
+		printf("\npostfix[i]: %c\n", postfix[i]);
+		if(isdigit(postfix[i])){ // check if number
+			printf("\npushed: %d\n", atoi(postfix));
+			push(&temp, atoi(postfix)); // push numerical value to stack
+		
+			while(postfix[y] != ' ') // increment where to cut array
+				y++;
+				
+			char *substr = postfix+y;
+			memmove(postfix, substr, strlen(substr)+1);
+			printf("\t\t%d", y);
+			y=0;
 		}
+		
 		else if(postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/'){
 			A = pop(&temp);
 			B = pop(&temp);
+			
+			printf("\nA:%d\nB:%d\n", A, B);
 			
 			switch (postfix[i])
 	            {
@@ -97,7 +114,7 @@ void parser(char str[],char postfix[],int n)
 			push(&temp,str[i]);
 		
 		//A number	
-		else if(str[i] >= 48 && str[i] <=57)
+		else if(isdigit(str[i]))
 		{
 			postfix[j] = str[i];
 			j++;
@@ -177,6 +194,7 @@ int main()
 	printf("Postfix: ");
 	for(i=0; i<strlen(postFix); i++)
 		printf("%c", postFix[i]);
+	printf("\n");
 
 	postfixEvaluation(postFix);
 	
