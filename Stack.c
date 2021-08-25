@@ -50,24 +50,3 @@ void display(struct stack S)
 	for(i=0;i<S.top;i++)
 		printf("%c %d\n", S.strContent[i],i);
 }
-
-/*
-int main()
-{
-	struct stack power;
-	power.top = -1;
-	push(&power, 'C');
-	push(&power, 'H');
-	push(&power, 'A');
-	push(&power, 'R');
-	push(&power, 'S');
-	int i = 0;
-	char ch = pop(&power);
-	while(power.strContent[i] != '\0')	
-	{
-		printf("%c",power.strContent[i]);
-		i++;
-	}
-	
-//	printf("%d",power.top);
-}*/

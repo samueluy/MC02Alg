@@ -1,5 +1,7 @@
 #include<stdio.h>
 #include<string.h>
+#include<ctype.h>
+
 #define MAX 255
 
 #include "Stack.c"
@@ -23,7 +25,6 @@ getLongString(char str[])
 /*TODO: Check for Logical and equal precedence.*/
 int checkPrecedence(char ch)
 {
-	
 	//Highest to Lowest Precedence
 	if(ch == '^' || ch == '!')
 		return 5;
@@ -38,7 +39,6 @@ int checkPrecedence(char ch)
 	return -1;
 }
 
-
 int checkOperator(char ch)
 {
 	if(ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^')
@@ -52,7 +52,7 @@ void postfixEvaluation(char postfix[]){
 	int total, A, B, i;
 	
 	for(i=0; i<=strlen(postfix); i++ ){
-		if(postfix[i] >= 48 && postfix[i] <=57){ // check if number (can use isDigit())
+		if(isdigit(postfix[i])){ // check if number
 		push(&temp, postfix[i]-'0'); // push numerical value to stack
 		}
 		else if(postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/'){
@@ -98,7 +98,7 @@ void parser(char str[],char postfix[],int n)
 			push(&temp,str[i]);
 		
 		//A number	
-		else if(str[i] >= 48 && str[i] <=57)
+		else if(isdigit(str[i]))
 		{
 			postfix[j] = str[i];
 			j++;
