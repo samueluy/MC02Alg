@@ -51,11 +51,16 @@ void postfixEvaluation(char postfix[]){
 	struct stack temp;
 	int total, A, B, i;
 	
+	temp.flag=0;
+	
 	for(i=0; i<=strlen(postfix); i++ ){
 		if(isdigit(postfix[i])){ // check if number
-		push(&temp, postfix[i]-'0'); // push numerical value to stack
+			pushEval(&	temp, postfix[i]-'0'); // push numerical value to stack
 		}
-		else if(postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/'){
+		else if(postfix[i] == ' ')
+			temp.flag=0;
+		else{
+			temp.flag=0;
 			A = pop(&temp);
 			B = pop(&temp);
 			
