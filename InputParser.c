@@ -35,6 +35,7 @@ int checkPrecedence(char ch)
 		return 2;
 	else if(ch == '&' || ch == '|')
 		return 1;
+	return -1;
 }
 
 
@@ -105,18 +106,30 @@ void parser(char str[],char postfix[],int n)
 		//To prevent Precedence comparison with '('
 		else if(temp.strContent[temp.top] == '(')
 		{
-			postfix[j] = ' ';
-			j++;		
-			push(&temp,str[i]);
+			/*Filter the case for >= */
+			if(!checkOperator(str[i]) && str[i + 1] == '=') 
+			{
+				postfix[j] = ' ';
+				j++;
+				push(&temp,str[i + 1]);
+				push(&temp,str[i]);
+				i++;
+			}
+			else
+			{
+				postfix[j] = ' ';
+				j++;		
+				push(&temp,str[i]);
+			}
 		}
 		//If character is )
 		else if(str[i] == ')')
 		{
-			postfix[j] = ' ';
-			j++;
 			///While the stack still has input, pop and add to postfix.
 			while(!stackEmpty(&temp) && temp.strContent[temp.top] != '(' )			
 			{
+				postfix[j] = ' ';
+				j++;
 				popTemp = pop(&temp);
 				postfix[j] = popTemp;
 				j++;
@@ -125,8 +138,34 @@ void parser(char str[],char postfix[],int n)
 			pop(&temp);
 		}
 		//If current character has greater precedence than the one in stack.
-		else if(checkPrecedence(str[i]) >= checkPrecedence(temp.strContent[temp.top]))
+		else if(checkPrecedence(str[i]) == checkPrecedence(temp.strContent[temp.top]))
+		{	
+			
+			if(checkOperator(str[i]))
+			{
+				printf("%c\t%c IS HERE\n",temp.strContent[temp.top],str[i]);
+				postfix[j] = ' ';
+				j++;
+				popTemp = pop(&temp);
+				printf("popTemp Value is : %c\n", popTemp);
+				
+				postfix[j] = popTemp;
+				j++;
+				postfix[j] = ' ';					
+				j++;
+				push(&temp,str[i]);
+			}
+			else
+			{
+				printf("%c\t%c IS HERE\n",temp.strContent[temp.top],str[i]);
+				push(&temp,str[i]);
+			}
+		}	
+		else if(checkPrecedence(str[i]) > checkPrecedence(temp.strContent[temp.top]))
+		{			
+			push(&temp,' ');
 			push(&temp,str[i]);
+		}
 		// If the one in stack has higher precedence.
 		else if(checkPrecedence(str[i]) < checkPrecedence(temp.strContent[temp.top]))
 		{
@@ -148,7 +187,6 @@ void parser(char str[],char postfix[],int n)
 		i++;		
 		
 	}while(i<n);
-	
 
 	//While there is still something in the stack.
 	while(!stackEmpty(&temp))
@@ -158,14 +196,14 @@ void parser(char str[],char postfix[],int n)
 		j++;
 	}
 
-	postfix[strlen(postfix)] = '\0';
+	postfix[j] = '\0';
 	
 }
 
 int main()
 {
 	struct stack input;
-	input.top = -1;	/// IMPORTANT.
+	input.top = -1;	
 	
 	char postFix[MAX];
 	int i = 0;
@@ -173,7 +211,6 @@ int main()
 	printf("Input:\n");
 	getLongString(input.strContent);
 	parser(input.strContent,postFix, strlen(input.strContent));
-	
 	printf("Postfix: ");
 	for(i=0; i<strlen(postFix); i++)
 		printf("%c", postFix[i]);
