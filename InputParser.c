@@ -351,24 +351,3 @@ void parser(char str[],char postfix[],int n)
 	postfix[j] = '\0';
 }
 
-int main()
-{
-	struct stack input;
-	input.top = -1;	
-	
-	char postfix[MAX];
-	int i = 0;
-	
-	printf("Input:\n");
-	getLongString(input.strContent);
-	parser(input.strContent,postfix, strlen(input.strContent));
-	printf("Postfix: ");
-	for(i=0; i<strlen(postfix); i++)
-		printf("%c", postfix[i]);
-
-	
-	
-	printf("\nCalculation: %d \n", postfixEvaluation(postfix));
-	
-	return 0;
-}
