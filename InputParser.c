@@ -1,5 +1,8 @@
 #include<stdio.h>
 #include<string.h>
+#include<ctype.h>
+#include<stdlib.h>
+
 #define MAX 255
 
 #include "Stack.c"
@@ -30,7 +33,6 @@ getLongString(char str[])
 	
 	@param ch - operator to be checked.
 	@return ranking equivalent for the operator. -1 otherwise.
-
 */
 int checkPrecedence(char ch)
 {
@@ -70,40 +72,49 @@ int checkOperator(char ch)
 	
 	@param postfix - postfix expression represented as array of characters.
 */
-void postfixEvaluation(char postfix[]){
+int postfixEvaluation(char postfix[]){
 	struct stack temp;
-	int total, A, B, i;
+	int A, B, i;
+	char ch;
 	
-	for(i=0; i<=strlen(postfix); i++ ){
-		if(postfix[i] >= 48 && postfix[i] <=57){ // check if number (can use isDigit())
-		push(&temp, postfix[i]-'0'); // push numerical value to stack
+	temp.top2=-1;
+	temp.flag=0;
+	
+	for(i=0; i<=strlen(postfix)-1; i++ ){
+		ch=postfix[i];
+		if(isdigit(ch)){ // check if number
+			pushEval(&temp, ch-'0'); // push numerical value to stack
 		}
-		else if(postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/'){
-			A = pop(&temp);
-			B = pop(&temp);
-			
-			switch (postfix[i])
+		else if(ch == ' ')
+			temp.flag=0;
+		else{
+			temp.flag=0;
+			B = popAsInt(&temp);
+			A = popAsInt(&temp);
+			switch (ch)
 	            {
-	            case '*':
-	                total = B * A;
-	                break;
-	
-	            case '/':
-	                total = B / A;
-	                break;
-	
 	            case '+':
-	                total = B + A;
+	                pushEval(&temp, A+B);
 	                break;
 	
 	            case '-':
-	                total = B - A;
+	                pushEval(&temp, A-B);
 	                break;
-	            }
-	            push(&temp, total);
+	
+	            case '*':
+	                pushEval(&temp, A*B);
+	                break;
+	
+	            case '/':
+	                pushEval(&temp, A/B);
+	                break;
+	                
+	            default: printf("Invalid input...");
+	        }
 		}
 	}
-	    printf("\nCalculation: %d \n", pop(&temp));
+	    printf("\nCalculation: %d \n", temp.intContent[temp.top2]);
+	    return 0;
 }
 
 /*
@@ -114,7 +125,6 @@ void postfixEvaluation(char postfix[]){
 	@param str - Infix array of characters
 	@param postfix - Array of characters for storing result.
 	@param n - Number of characters in str
-
 */
 void parser(char str[],char postfix[],int n)
 {
@@ -132,7 +142,7 @@ void parser(char str[],char postfix[],int n)
 			push(&temp,str[i]);
 		
 		//A number	
-		else if(str[i] >= 48 && str[i] <=57)
+		else if(isdigit(str[i]))
 		{
 			postfix[j] = str[i];
 			j++;
@@ -154,8 +164,7 @@ void parser(char str[],char postfix[],int n)
 			{
 				postfix[j] = ' ';
 				j++;		
-				/*if(checkOperator(str[i])) 	
-					push(&temp,' ');    // Not sure why */
+				push(&temp,' ');
 				push(&temp,str[i]);
 			}
 		}
@@ -167,6 +176,7 @@ void parser(char str[],char postfix[],int n)
 			j++;
 			while(!stackEmpty(&temp) && temp.strContent[temp.top] != '(' )			
 			{
+							printf("%c\t%c IS HERE\n",temp.strContent[temp.top],str[i]);
 				popTemp = pop(&temp);
 				postfix[j] = popTemp;
 				j++;
@@ -183,6 +193,7 @@ void parser(char str[],char postfix[],int n)
 				postfix[j] = ' ';
 				j++;
 				popTemp = pop(&temp);
+				printf("popTemp Value is : %c\n", popTemp);
 				
 				postfix[j] = popTemp;
 				j++;
@@ -192,7 +203,6 @@ void parser(char str[],char postfix[],int n)
 			}
 			else
 			{
-				push(&temp,' ');
 				push(&temp,str[i]);
 			}
 		}	
@@ -200,7 +210,6 @@ void parser(char str[],char postfix[],int n)
 		//Current character has precedence
 		else if(checkPrecedence(str[i]) > checkPrecedence(temp.strContent[temp.top]))
 		{			
-		
 			push(&temp,' ');
 			postfix[j] = ' ';
 			j++;
