@@ -1,9 +1,9 @@
 #include <stdio.h>
 
-#define LEN1 255
+#define MAX 256
 
-typedef char token[LEN1 + 1];
-typedef int arrNum[LEN1 + 1];
+typedef char token[MAX];
+typedef int arrNum[MAX];
 
 struct stack
 {
@@ -31,7 +31,7 @@ int stackEmpty(struct stack* S)
 	else
 	{
 		S->isEmpty = 0;	
-		return 0;		//Should it be 1?
+		return 0;
 	}
 }
 
@@ -56,7 +56,8 @@ char pop(struct stack* S)
 }
 
 /*
-	**Function Description**
+	This function pops a value
+	from the integer array
 	
 	@param S - Stack to be modified.
 */
@@ -78,7 +79,9 @@ void push(struct stack* S, char x)
 }
 
 /*
-	**Function Description**
+	This function adds a value
+	to the integer array.
+	This accepts multiple digit numbers.
 	
 	@param S - Stack to be modified.
 	@param val - integer to be added to the numerical contents of the stack.

@@ -8,7 +8,14 @@ struct queue{
 	int size;
 };
 
-int isEmpty(int size){ // Check if the queue is empty
+/*
+	This function checks if
+	the queue is empty
+	
+	@param size - size of the queue
+*/
+
+int isEmpty(int size){
 	if(size==0){
 		printf("\nQueue is empty\n");
 		return 1;
@@ -17,7 +24,13 @@ int isEmpty(int size){ // Check if the queue is empty
 		return 0;
 }
 
-int isFull(int size){ // Check if the queue is full
+/*
+	This function checks if
+	the queue is full
+	
+	@param size - size of the queue
+*/
+int isFull(int size){
 	if(size == MAX){
 		printf("Queue is full\n");
 		return 1;
@@ -25,6 +38,14 @@ int isFull(int size){ // Check if the queue is full
 	else
 		return 0;
 }
+
+/*
+	This function adds a character
+	to the queue
+	
+	@param Q - Stack to be modified
+	@param input - character to be added
+*/
 	
 void enqueue(struct queue* Q, char input){
 	if(isFull(Q->size));
@@ -42,6 +63,12 @@ void enqueue(struct queue* Q, char input){
 	}
 }
 
+/*
+	This function removes the first
+	element in the queue
+	
+	@param Q - Queue to be modified
+*/
 char dequeue(struct queue* Q){
 	
 	if(isEmpty(Q->size));
@@ -60,6 +87,12 @@ char dequeue(struct queue* Q){
 	return 0;
 }
 
+/*
+	This function displays the
+	contents of the queue
+	
+	@param Q - Queue to be displayed
+*/
 void display(struct queue Q){
 	int i;
 	

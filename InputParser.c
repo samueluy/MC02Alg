@@ -4,7 +4,7 @@
 #include<stdlib.h>
 #include<math.h>
 
-#define MAX 255
+#define MAX 256
 
 #include "Stack.c"
 
@@ -76,8 +76,6 @@ int checkOperator(char ch)
 	@param *i - pointer to the current index of the for loop
 	
 */
-
-
 char selectOp(char postfix[MAX], int *i){
 	char ch = postfix[*i];
 	char nextCh = postfix[*i+1];
@@ -117,7 +115,6 @@ char selectOp(char postfix[MAX], int *i){
 	
 	@param postfix - postfix expression represented as array of characters.
 */
-
 int postfixEvaluation(char postfix[], int *valid){
 	struct stack temp;
 	int A, B, bVal,i;
@@ -223,6 +220,12 @@ int postfixEvaluation(char postfix[], int *valid){
 	    return 0;
 }
 
+/*
+	This function displays the
+	contents of postfix
+	
+	@param postfix - postfix array
+*/
 void displayPostfix(char postfix[MAX]){
 	int i;
 	printf("Postfix: ");
@@ -247,7 +250,7 @@ void parser(char str[],char postfix[],int n)
 	temp.top = -1;
 	char popTemp;
 	
-	/*Catch the instance where the current character is*/
+	//Catch the instance where the current character is
 	do
 	{
 		// Open Parenthesis
@@ -276,8 +279,6 @@ void parser(char str[],char postfix[],int n)
 			{
 				postfix[j] = ' ';
 				j++;		
-				/*if(checkOperator(str[i])) 	
-					push(&temp,' ');    // Not sure why */
 				push(&temp,str[i]);
 			}
 		}
