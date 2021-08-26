@@ -139,9 +139,7 @@ int postfixEvaluation(char postfix[]){
 			bVal=0;
 			B = popAsInt(&temp);
 			A = popAsInt(&temp);
-			printf("\nA: %d\nB: %d\n", A,B);
 			ch=selectOp(postfix, &i);
-			printf("ch: %c\n", ch);
 			switch (ch)
 	            {
 	            case '+':
@@ -219,7 +217,8 @@ int postfixEvaluation(char postfix[]){
 		}
 	}
 		if(valid)
-	    	printf("\nCalculation: %d \n", temp.intContent[temp.top2]);
+	    	return temp.intContent[temp.top2];
+	    	
 	    return 0;
 }
 
@@ -357,17 +356,19 @@ int main()
 	struct stack input;
 	input.top = -1;	
 	
-	char postFix[MAX];
+	char postfix[MAX];
 	int i = 0;
 	
 	printf("Input:\n");
 	getLongString(input.strContent);
-	parser(input.strContent,postFix, strlen(input.strContent));
+	parser(input.strContent,postfix, strlen(input.strContent));
 	printf("Postfix: ");
-	for(i=0; i<strlen(postFix); i++)
-		printf("%c", postFix[i]);
+	for(i=0; i<strlen(postfix); i++)
+		printf("%c", postfix[i]);
 
-	postfixEvaluation(postFix);
+	
+	
+	printf("\nCalculation: %d \n", postfixEvaluation(postfix));
 	
 	return 0;
 }
