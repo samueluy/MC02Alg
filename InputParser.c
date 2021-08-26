@@ -118,10 +118,10 @@ char selectOp(char postfix[MAX], int *i){
 	@param postfix - postfix expression represented as array of characters.
 */
 
-int postfixEvaluation(char postfix[]){
+int postfixEvaluation(char postfix[], int *valid){
 	struct stack temp;
 	int A, B, bVal,i;
-	int valid=1;
+	*valid=1;
 	char ch;
 	
 	temp.top2=-1;
@@ -154,7 +154,7 @@ int postfixEvaluation(char postfix[]){
 	            case '/':
 	            	if(B==0){
 	            		printf("\nDivision by zero error!\n");
-	            		valid=0;
+	            		*valid=0;
 					}
 	            	else
 	                	pushEval(&temp, A/B);
@@ -211,7 +211,8 @@ int postfixEvaluation(char postfix[]){
 	            	pushEval(&temp, bVal);
 	            	break;
 	            	
-	            default:valid=0; 
+	            default:*valid=0;
+	            		i=strlen(postfix)-1;
 						printf("\nInvalid input...");
 	        }
 		}
@@ -220,6 +221,13 @@ int postfixEvaluation(char postfix[]){
 	    	return temp.intContent[temp.top2];
 	    	
 	    return 0;
+}
+
+void displayPostfix(char postfix[MAX]){
+	int i;
+	printf("Postfix: ");
+	for(i=0; i<strlen(postfix); i++)
+		printf("%c", postfix[i]);
 }
 
 /*
