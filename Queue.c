@@ -1,6 +1,13 @@
 #include <stdio.h>
 #define MAX 256
 
+struct queue{
+	char strContent[MAX];
+	int head_index;
+	int tail_index;
+	int size;
+};
+
 int isEmpty(int size){ // Check if the queue is empty
 	if(size==0){
 		printf("\nQueue is empty\n");
@@ -19,70 +26,71 @@ int isFull(int size){ // Check if the queue is full
 		return 0;
 }
 	
-void enqueue(char array[MAX], char input, int *tail_index, int *size){
-	if(isFull(*size));
+void enqueue(struct queue* Q, char input){
+	if(isFull(Q->size));
 	else{
-		if (*tail_index >= MAX-1){ // return to index 0 if there is space in the start of the array(circular array)
-		*tail_index=0;
-		array[*tail_index] = input;
-		*size+=1;
+		if (Q->tail_index >= MAX-1){ // return to index 0 if there is space in the start of the array(circular array)
+		Q->tail_index=0;
+		Q->strContent[Q->tail_index] = input;
+		Q->size+=1;
 		}
 		else{ // add a value to the end of the queue
-			*tail_index+=1;
-			array[*tail_index] = input;
-			*size+=1;
+			Q->tail_index+=1;
+			Q->strContent[Q->tail_index] = input;
+			Q->size+=1;
 		}
 	}
 }
 
-char dequeue(char array[MAX], int *head_index, int *tail_index, int *size){
+char dequeue(struct queue* Q){
 	
-	if(isEmpty(*size));
-	else if(*head_index == MAX-1){ // return to the start of the array if head is at the end of the array
-		*head_index=0;
-		*size-=1;
-		return array[*head_index];
+	if(isEmpty(Q->size));
+	else if(Q->head_index == MAX-1){ // return to the start of the array if head is at the end of the array
+		Q->head_index=0;
+		Q->size-=1;
+		return Q->strContent[Q->head_index];
 	}
 	else{ // remove the value at the tail end
-		*size-=1;
-		*head_index+=1;
-		return array[*head_index];
+		Q->size-=1;
+		Q->head_index+=1;
+		return Q->strContent[Q->head_index];
 	}
-	array[*head_index] = -1; // close the index value
+	Q->strContent[Q->head_index] = -1; // close the index value
 	
 	return 0;
 }
 
-void display(char array[MAX], int head_index, int tail_index, int size){
+void display(struct queue Q){
 	int i;
 	
-	if(!isEmpty(size)){
+	if(!isEmpty(Q.size)){
 		printf("\nQueue: ");
 
-		if(head_index<=tail_index){
-			for(i=head_index; i<=tail_index; i++){
-				printf("%c ", array[i]);
+		if(Q.head_index<=Q.tail_index){
+			for(i=Q.head_index; i<=Q.tail_index; i++){
+				printf("%c ", Q.strContent[i]);
 			}
 		}
 		else{ // print circular array
-			for(i=head_index; i<=MAX-1; i++)
-				printf("%c ", array[i]);
+			for(i=Q.head_index; i<=MAX-1; i++)
+				printf("%c ", Q.strContent[i]);
 				
-			for(i=0;i<=tail_index;i++)
-			printf("%c ", array[i]);
+			for(i=0;i<=Q.tail_index;i++)
+			printf("%c ", Q.strContent[i]);
 		}
 		
 		printf("\n");
 	}
 }
 
+/*
 int main(void){
-	char queue[MAX];
+	struct queue queue;
 	char input;
 	int navigate=0;
-	int head_index, tail_index;
-	head_index = tail_index = -1; // exit variable	
-	int size=0; // size of queue
+	
+	queue.head_index = queue.tail_index = -1; // exit variable	
+	queue.size=0;
 	
 	while(navigate!= 4){
 		printf("\n[1] Enqueue\n");
@@ -95,13 +103,13 @@ int main(void){
 		switch(navigate){
 		case 1: printf("Input: ");
 				scanf(" %c", &input);
-				enqueue(queue, input, &tail_index, &size);
+				enqueue(&queue, input);
 				break;
 		
-		case 2:	printf("Retreived: %c\n", dequeue(queue, &head_index, &tail_index, &size));
+		case 2:	printf("Retreived: %c\n", dequeue(&queue));
 				break;
 		
-		case 3: display(queue, head_index+1, tail_index, size);
+		case 3: display(queue);
 				break;
 				
 		case 4: break;
@@ -110,3 +118,4 @@ int main(void){
 	
 	return 0;
 }
+*/

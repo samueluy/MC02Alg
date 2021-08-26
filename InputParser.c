@@ -8,7 +8,7 @@
 
 #include "Stack.c"
 
-/*This function is used to take input from the user
+/*This function is used to take i(put from the user
 	@param str - Address of a character array to store the inputs of the user. 
 */
 void
