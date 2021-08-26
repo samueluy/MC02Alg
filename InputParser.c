@@ -1,8 +1,5 @@
 #include<stdio.h>
 #include<string.h>
-#include<ctype.h>
-#include<stdlib.h>
-
 #define MAX 255
 
 #include "Stack.c"
@@ -33,6 +30,7 @@ getLongString(char str[])
 	
 	@param ch - operator to be checked.
 	@return ranking equivalent for the operator. -1 otherwise.
+
 */
 int checkPrecedence(char ch)
 {
@@ -116,7 +114,6 @@ int postfixEvaluation(char postfix[]){
 	    printf("\nCalculation: %d \n", temp.intContent[temp.top2]);
 	    return 0;
 }
-
 /*
 	This function manipulates an infix expression,
 	manipulating each character in the array using 
@@ -125,6 +122,7 @@ int postfixEvaluation(char postfix[]){
 	@param str - Infix array of characters
 	@param postfix - Array of characters for storing result.
 	@param n - Number of characters in str
+
 */
 void parser(char str[],char postfix[],int n)
 {
@@ -142,7 +140,7 @@ void parser(char str[],char postfix[],int n)
 			push(&temp,str[i]);
 		
 		//A number	
-		else if(isdigit(str[i]))
+		else if(str[i] >= 48 && str[i] <=57)
 		{
 			postfix[j] = str[i];
 			j++;
@@ -164,7 +162,8 @@ void parser(char str[],char postfix[],int n)
 			{
 				postfix[j] = ' ';
 				j++;		
-				push(&temp,' ');
+				/*if(checkOperator(str[i])) 	
+					push(&temp,' ');    // Not sure why */
 				push(&temp,str[i]);
 			}
 		}
@@ -176,7 +175,6 @@ void parser(char str[],char postfix[],int n)
 			j++;
 			while(!stackEmpty(&temp) && temp.strContent[temp.top] != '(' )			
 			{
-							printf("%c\t%c IS HERE\n",temp.strContent[temp.top],str[i]);
 				popTemp = pop(&temp);
 				postfix[j] = popTemp;
 				j++;
@@ -193,7 +191,6 @@ void parser(char str[],char postfix[],int n)
 				postfix[j] = ' ';
 				j++;
 				popTemp = pop(&temp);
-				printf("popTemp Value is : %c\n", popTemp);
 				
 				postfix[j] = popTemp;
 				j++;
@@ -203,6 +200,7 @@ void parser(char str[],char postfix[],int n)
 			}
 			else
 			{
+				push(&temp,' ');
 				push(&temp,str[i]);
 			}
 		}	
@@ -210,6 +208,7 @@ void parser(char str[],char postfix[],int n)
 		//Current character has precedence
 		else if(checkPrecedence(str[i]) > checkPrecedence(temp.strContent[temp.top]))
 		{			
+		
 			push(&temp,' ');
 			postfix[j] = ' ';
 			j++;
