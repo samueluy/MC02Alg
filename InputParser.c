@@ -141,7 +141,7 @@ int postfixEvaluation(char postfix[]){
 	                break;
 	            case '/':
 	            	if(B==0){
-	            		printf("\nCan not divide by 0...\n");
+	            		printf("\nDivision by zero error!\n");
 	            		valid=0;
 					}
 	            		
