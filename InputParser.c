@@ -79,24 +79,36 @@ int checkOperator(char ch)
 
 
 char selectOp(char postfix[MAX], int *i){
-	*i += 1;
-	char ch = postfix[*i-1];
-	char nextCh = postfix[*i];
+	char ch = postfix[*i];
+	char nextCh = postfix[*i+1];
 	
-	if(ch=='>'&&nextCh=='=')
+	if(ch=='>'&&nextCh=='='){
+		*i+=1;
 		return '1';
-	else if(ch=='<'&&nextCh=='=')
+	}
+		
+	else if(ch=='<'&&nextCh=='='){
+		*i+=1;
 		return '2';
-	else if(ch=='!'&&nextCh=='=')
+	}
+	else if(ch=='!'&&nextCh=='='){
+		*i+=1;
 		return '3';
-	else if(ch=='='&&nextCh=='=')
+	}
+	else if(ch=='='&&nextCh=='='){
+		*i+=1;
 		return '4';
-	else if(ch=='&'&&nextCh=='&')
+	}
+	else if(ch=='&'&&nextCh=='&'){
+		*i+=1;
 		return '5';
-	else if(ch=='|'&&nextCh=='|')
+	}
+	else if(ch=='|'&&nextCh=='|'){
+		*i+=1;
 		return '6';
+	}
 	else
-		return postfix[*i-1];
+		return postfix[*i];
 }
 
 /*
@@ -115,7 +127,7 @@ int postfixEvaluation(char postfix[]){
 	temp.top2=-1;
 	temp.flag=0;
 	
-	for(i=0; i<=strlen(postfix)-1; i++ ){
+	for(i=0; i<=strlen(postfix)-1; i++){
 		ch=postfix[i];
 		if(isdigit(ch)){ // check if number
 			pushEval(&temp, ch-'0'); // push numerical value to stack
@@ -127,7 +139,9 @@ int postfixEvaluation(char postfix[]){
 			bVal=0;
 			B = popAsInt(&temp);
 			A = popAsInt(&temp);
+			printf("\nA: %d\nB: %d\n", A,B);
 			ch=selectOp(postfix, &i);
+			printf("ch: %c\n", ch);
 			switch (ch)
 	            {
 	            case '+':
@@ -144,7 +158,6 @@ int postfixEvaluation(char postfix[]){
 	            		printf("\nDivision by zero error!\n");
 	            		valid=0;
 					}
-	            		
 	            	else
 	                	pushEval(&temp, A/B);
 	                break;

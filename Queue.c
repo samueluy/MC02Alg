@@ -83,7 +83,6 @@ void display(struct queue Q){
 	}
 }
 
-/*
 int main(void){
 	struct queue queue;
 	char input;
@@ -118,4 +117,4 @@ int main(void){
 	
 	return 0;
 }
-*/
+
