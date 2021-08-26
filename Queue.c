@@ -3,7 +3,6 @@
 
 struct queue{
 	char strContent[MAX];
-	int intContent[MAX];
 	int head_index;
 	int tail_index;
 	int size;
