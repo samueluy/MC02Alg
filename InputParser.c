@@ -2,6 +2,7 @@
 #include<string.h>
 #include<ctype.h>
 #include<stdlib.h>
+#include<math.h>
 
 #define MAX 255
 
@@ -61,9 +62,41 @@ int checkPrecedence(char ch)
 int checkOperator(char ch)
 {
 	if(ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^')
-		return 1;	
+		return 1;
 	else
 		return 0;
+}
+
+/*
+	This function is used to select which switch
+	case must be executed for Arithmetic,
+	Relational, and logical operators.
+	
+	@param postfix - postfix character array
+	@param *i - pointer to the current index of the for loop
+	
+*/
+
+
+char selectOp(char postfix[MAX], int *i){
+	*i += 1;
+	char ch = postfix[*i-1];
+	char nextCh = postfix[*i];
+	
+	if(ch=='>'&&nextCh=='=')
+		return '1';
+	else if(ch=='<'&&nextCh=='=')
+		return '2';
+	else if(ch=='!'&&nextCh=='=')
+		return '3';
+	else if(ch=='='&&nextCh=='=')
+		return '4';
+	else if(ch=='&'&&nextCh=='&')
+		return '5';
+	else if(ch=='|'&&nextCh=='|')
+		return '6';
+	else
+		return postfix[*i-1];
 }
 
 /*
@@ -72,9 +105,11 @@ int checkOperator(char ch)
 	
 	@param postfix - postfix expression represented as array of characters.
 */
+
 int postfixEvaluation(char postfix[]){
 	struct stack temp;
-	int A, B, i;
+	int A, B, bVal,i;
+	int valid=1;
 	char ch;
 	
 	temp.top2=-1;
@@ -89,31 +124,89 @@ int postfixEvaluation(char postfix[]){
 			temp.flag=0;
 		else{
 			temp.flag=0;
+			bVal=0;
 			B = popAsInt(&temp);
 			A = popAsInt(&temp);
+			ch=selectOp(postfix, &i);
 			switch (ch)
 	            {
 	            case '+':
 	                pushEval(&temp, A+B);
 	                break;
-	
 	            case '-':
 	                pushEval(&temp, A-B);
 	                break;
-	
 	            case '*':
 	                pushEval(&temp, A*B);
 	                break;
-	
 	            case '/':
-	                pushEval(&temp, A/B);
+	            	if(B==0){
+	            		printf("\nCan not divide by 0...\n");
+	            		valid=0;
+					}
+	            		
+	            	else
+	                	pushEval(&temp, A/B);
 	                break;
-	                
-	            default: printf("Invalid input...");
+	            case '%':
+	            	pushEval(&temp, A%B);
+	            	break;
+	            case '^':
+	            	pushEval(&temp, pow(A,B));
+	            	break;
+	            case '>':
+	            	if(A>B)
+	            		bVal=1;
+	            	pushEval(&temp, bVal);
+	            	break;
+	            case '<':
+	            	if(A<B)
+	            		bVal=1;
+	            	pushEval(&temp, bVal);
+	            	break;
+	            case '1':
+	            	if(A>=B)
+	            		bVal=1;
+	            	pushEval(&temp, bVal);
+	            	break;
+	            case '2':
+	            	if(A<=B)
+	            		bVal=1;
+	            	pushEval(&temp, bVal);
+	            	break;
+	            case '3':
+	            	if(A!=B)
+	            		bVal=1;
+	            	pushEval(&temp, bVal);
+	            	break;
+				case '4':
+					if(A==B)
+	            		bVal=1;
+	            	pushEval(&temp, bVal);
+	            	break;
+	            case '5':
+	            	if(A&&B)
+	            		bVal=1;
+	            	pushEval(&temp, bVal);
+	            	break;
+	            case '6':
+	            	if(A||B)
+	            		bVal=1;
+	            	pushEval(&temp, bVal);
+	            	break;
+	            case '!':
+	            	if(A!=B)
+	            		bVal=1;
+	            	pushEval(&temp, bVal);
+	            	break;
+	            	
+	            default:valid=0; 
+						printf("\nInvalid input...");
 	        }
 		}
 	}
-	    printf("\nCalculation: %d \n", temp.intContent[temp.top2]);
+		if(valid)
+	    	printf("\nCalculation: %d \n", temp.intContent[temp.top2]);
 	    return 0;
 }
 
@@ -156,7 +249,6 @@ void parser(char str[],char postfix[],int n)
 				postfix[j] = ' ';
 				j++;
 				push(&temp,str[i + 1]);
-				push(&temp,' ');
 				push(&temp,str[i]);
 				i++;
 			}
@@ -164,7 +256,8 @@ void parser(char str[],char postfix[],int n)
 			{
 				postfix[j] = ' ';
 				j++;		
-				push(&temp,' ');
+				/*if(checkOperator(str[i])) 	
+					push(&temp,' ');    // Not sure why */
 				push(&temp,str[i]);
 			}
 		}
@@ -176,7 +269,6 @@ void parser(char str[],char postfix[],int n)
 			j++;
 			while(!stackEmpty(&temp) && temp.strContent[temp.top] != '(' )			
 			{
-							printf("%c\t%c IS HERE\n",temp.strContent[temp.top],str[i]);
 				popTemp = pop(&temp);
 				postfix[j] = popTemp;
 				j++;
@@ -193,7 +285,6 @@ void parser(char str[],char postfix[],int n)
 				postfix[j] = ' ';
 				j++;
 				popTemp = pop(&temp);
-				printf("popTemp Value is : %c\n", popTemp);
 				
 				postfix[j] = popTemp;
 				j++;
