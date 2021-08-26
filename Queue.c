@@ -3,6 +3,7 @@
 
 struct queue{
 	char strContent[MAX];
+	int intContent[MAX];
 	int head_index;
 	int tail_index;
 	int size;
@@ -14,7 +15,6 @@ struct queue{
 	
 	@param size - size of the queue
 */
-
 int isEmpty(int size){
 	if(size==0){
 		printf("\nQueue is empty\n");
@@ -116,6 +116,7 @@ void display(struct queue Q){
 	}
 }
 
+/*
 int main(void){
 	struct queue queue;
 	char input;
@@ -150,4 +151,5 @@ int main(void){
 	
 	return 0;
 }
+*/
 
