@@ -12,7 +12,7 @@
 	@param str - Address of a character array to store the inputs of the user. 
 */
 void
-getLongString(char str[]) 
+getLongString(char str[])
 {  char ch;
    int i = 0;
 
@@ -203,7 +203,9 @@ int postfixEvaluation(char postfix[], int *valid){
 	            	pushEval(&temp, bVal);
 	            	break;
 	            case '!':
-	            	if(A!=B)
+	            	if(!A)
+	            		bVal=1;
+	            	else if(!B)
 	            		bVal=1;
 	            	pushEval(&temp, bVal);
 	            	break;
@@ -359,4 +361,3 @@ void parser(char str[],char postfix[],int n)
 
 	postfix[j] = '\0';
 }
-
